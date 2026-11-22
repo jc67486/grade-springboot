@@ -62,11 +62,11 @@
 
 ## 测试
 
-`ash
+```bash
 mvn test        # 31 passed
-`
+```
 
-JaCoCo 报告在 	arget/site/jacoco/index.html。
+JaCoCo 报告在 `target/site/jacoco/index.html`。
 
 | 指标 | 覆盖率 |
 |---|---|
@@ -75,7 +75,7 @@ JaCoCo 报告在 	arget/site/jacoco/index.html。
 | 行 | 87.2%（238/273） |
 | 方法 | 88.7%（63/71） |
 
-> 数字是排除 Lombok 生成代码后的结果：lombok.config 里开 ddLombokGeneratedAnnotation，
+> 数字是排除 Lombok 生成代码后的结果：lombok.config 里开 `addLombokGeneratedAnnotation`，
 > 否则 getter/setter/equals/hashCode 会把指令覆盖拉低到 30% 附近。
 
 覆盖点：
@@ -100,13 +100,15 @@ JaCoCo 报告在 	arget/site/jacoco/index.html。
 ### 初始化数据库
 
 ```bash
-# 建库
-mysql -uroot -p -e "CREATE DATABASE grade_java DEFAULT CHARSET utf8mb4;"
+# 建库（-P3305 与 application.yml 里的端口一致；若你的 MySQL 在 3306，去掉该参数）
+mysql -uroot -p -P3305 -e "CREATE DATABASE grade_java DEFAULT CHARSET utf8mb4;"
 
 # 建表 + 初始数据（必须用 utf8mb4 客户端，否则中文会存成乱码）
-mysql -uroot -p --default-character-set=utf8mb4 grade_java < src/main/resources/db/schema.sql
-mysql -uroot -p --default-character-set=utf8mb4 grade_java < src/main/resources/db/data.sql
+mysql -uroot -p -P3305 --default-character-set=utf8mb4 grade_java < src/main/resources/db/schema.sql
+mysql -uroot -p -P3305 --default-character-set=utf8mb4 grade_java < src/main/resources/db/data.sql
 ```
+
+> **建库和连库必须是同一个端口**，否则会出现「表不存在」——应用连 3305，脚本却建到了 3306。
 
 `data.sql` 用递归 CTE 生成 48 名学生、6 门课程，再用 `CROSS JOIN` 生成 288 条成绩。
 
@@ -128,16 +130,14 @@ mvn clean package -DskipTests && java -jar target/grade-springboot-1.0.0.jar
 ### 验证
 
 ```bash
-# 登录拿 token
-curl -X POST http://127.0.0.1:5003/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d "{\"username\":\"teacher\",\"password\":\"123456\"}"
+# 登录拿 token（Windows PowerShell 请写成一行，不能用 \ 续行）
+curl -X POST "http://127.0.0.1:5003/api/auth/login" -H "Content-Type: application/json" -d "{\"username\":\"teacher\",\"password\":\"123456\"}"
 
-# 带 token 查学生
-curl http://127.0.0.1:5003/api/students?page=1&size=5 -H "Authorization: Bearer <token>"
+# 带 token 查学生（URL 一定要加引号：PowerShell 会把未加引号的 & 当成命令分隔符）
+curl "http://127.0.0.1:5003/api/students?page=1&size=5" -H "Authorization: Bearer <token>"
 
 # 无 token 应返回 HTTP 401
-curl -i http://127.0.0.1:5003/api/students
+curl -i "http://127.0.0.1:5003/api/students"
 ```
 
 ## 踩坑记录
