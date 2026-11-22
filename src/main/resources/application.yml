@@ -1,0 +1,38 @@
+server:
+  port: 5003
+
+spring:
+  application:
+    name: grade-springboot
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3305/grade_java?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+    password: "666666"
+  sql:
+    init:
+      mode: never
+      # 首次初始化：mysql --default-character-set=utf8mb4 ... < src/main/resources/db/schema.sql
+      # 详见 README；之后启动不再重建，避免数据丢失
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+app:
+  jwt:
+    secret: grade-springboot-jwt-secret-key-please-change-in-production-2025
+    expire-hours: 2
+  cors:
+    allowed-origins: "*"
