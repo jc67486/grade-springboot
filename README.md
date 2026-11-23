@@ -12,7 +12,7 @@
 
 **Java 8 + Spring Boot 2.7 + MyBatis-Plus + MySQL 8 + EasyExcel + JWT**
 
-同一套教务业务的 Java 后端实现：学生 / 课程 / 成绩的 CRUD、统计聚合，以及 **1 万行 Excel 批量导入导出**。
+同一套教务业务的 Java 后端实现：学生 / 课程 / 成绩的 CRUD、统计聚合，以及 **1 万行 Excel 批量导入**（导入压测规模；库内初始数据为 48 名学生 / 6 门课程 / 288 条成绩）。
 与另一个 Flask 版后端（[grade-admin](https://github.com/jc67486/grade-admin)）业务相同、技术栈不同，用于对比两种后端方案的工程差异。
 
 ## 核心数据：Excel 导入优化
